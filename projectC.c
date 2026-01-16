@@ -29,59 +29,35 @@ int empCount = 0;
 struct TimeSheet timesheets[MAX_LOG];
 int logCount = 0;
 
-/* Khoi tao du lieu mau cho 5 nhan vien ban dau */
 void initSampleData();
-/* Xoa ky tu newline o cuoi chuoi nhap */
 void removeNewline(char *str);
-/* Tim chi so nhan vien theo empId, tra ve -1 neu khong co */
 int findEmpIndex(char id[]);
-/* Kiem tra mot nhan vien da co log cham cong tai ngay cu the chua */
 int isCheckedIn(char empId[], char date[]);
-/* Tra ve 1 neu chuoi co it nhat 1 chu cai */
 int containsLetter(char *str);
-/* Kiem tra chuoi so thuc hop le (chi 1 dau '.', khong o dau/cuoi) */
 int isNumberString(char *str);
-/* Kiem tra chuoi so nguyen hop le */
 int isIntegerString(char *str);
-/* Kiem tra dinh dang ngay dd/mm/yyyy hop le va so ngay trong thang */
 int isValidDateFormat(char *date);
-
-/* Helper functions - Giam code trung lap */
-/* Kiem tra chuoi co chua chu so khong */
 int hasDigit(char *str);
-/* Nhap va validate input y/n, tra ve 1 neu 'y', 0 neu 'n', -1 neu loi */
 int getYesNoInput(const char *prompt);
-/* Nhap chuoi khong duoc de trong, tra ve 1 neu thanh cong */
-int getNonEmptyString(char *buffer, size_t size, const char *prompt);
-/* In bang nhan vien (header + data) */
 void printEmployeeTable(int startIdx, int endIdx);
-/* In header cua bang nhan vien */
 void printEmployeeHeader();
 
-/* In menu chinh */
+
 void printfMenu();
-/* Them nhan vien moi, validate tung truong */
 void addEmployee();
-/* Cap nhat chuc vu, luong co ban cua nhan vien theo ID */
 void updateEmployee();
-/* Xoa nhan vien theo ID sau khi xac nhan */
 void deleteEmployee();
-/* Liet ke nhan vien phan trang */
 void listEmployee();
-/* Tim kiem theo ten (so khop mot phan, khong phan biet hoa thuong) */
 void searchEmployeeByName();
-/* Sap xep danh sach theo luong tang/giam dan */
 void sortByBaseSalary();
-/* Cham cong: kiem tra ID, dinh dang ngay, trang thai, chong trung log */
 void checkIn();
-/* Xem bang cham cong cua mot nhan vien */
 void viewTimeSheet();
 
 int main()
 {
     initSampleData();
     int choice;
-    char buffer[20]; /* Tang buffer size de tranh overflow */
+    char buffer[20];
 
     do
     {
@@ -191,7 +167,7 @@ void initSampleData()
     strcpy(employees[3].position, "Nhan vien");
     employees[3].baseSalary = 6000000;
     employees[3].workDays = 18;
-    
+
     strcpy(employees[4].empId, "NV005");
     strcpy(employees[4].name, "Nguyen Binh");
     strcpy(employees[4].position, "Nhan vien");
@@ -210,7 +186,6 @@ void removeNewline(char *str)
 
 int findEmpIndex(char id[])
 {
-    /* Duyet tu dau danh sach den khi tim duoc empId trung khop */
     for (int i = 0; i < empCount; i++)
     {
         if (strcmp(employees[i].empId, id) == 0)
@@ -223,7 +198,6 @@ int findEmpIndex(char id[])
 
 int isCheckedIn(char empId[], char date[])
 {
-    /* Moi timesheets[i] la mot log da ton tai; so sanh ca empId va ngay */
     for (int i = 0; i < logCount; i++)
     {
         if (strcmp(timesheets[i].empId, empId) == 0 && strcmp(timesheets[i].date, date) == 0)
@@ -259,14 +233,12 @@ int isNumberString(char *str)
 
     for (size_t i = 0; i < len; i++)
     {
-        /* Neu la chu so thi dem va tiep tuc */
         if (isdigit((unsigned char)str[i]))
         {
             digitCount++;
             continue;
         }
 
-        /* Chi cho phep duy nhat 1 dau cham, khong o dau/cuoi */
         if (str[i] == '.' && dotCount == 0 && i != 0 && i != len - 1)
         {
             dotCount++;
@@ -297,15 +269,13 @@ int isIntegerString(char *str)
 
 int isValidDateFormat(char *date)
 {
-    // do dai phai dung 10 ky tu: dd/mm/yyyy
     if (strlen(date) != 10)
         return 0;
 
-    // Vi tri 2 va 5 phai la '/'
     if (date[2] != '/' || date[5] != '/')
         return 0;
 
-    // Cac vi tri khac phai la so
+
     for (int i = 0; i < 10; i++)
     {
         if (i == 2 || i == 5)
@@ -318,17 +288,15 @@ int isValidDateFormat(char *date)
         }
     }
 
-    // Tach ngay, thang, nam
     int day = (date[0] - '0') * 10 + (date[1] - '0');
     int month = (date[3] - '0') * 10 + (date[4] - '0');
     int year = atoi(date + 6);
 
-    // Kiem tra thang hop le
     if (month < 1 || month > 12)
     {
         return 0;
     }
-    // So ngay toi da theo thang
+
     int maxDay;
     switch (month)
     {
@@ -348,7 +316,6 @@ int isValidDateFormat(char *date)
         maxDay = 30;
         break;
     case 2:
-        // Nam nhuan: chia het cho 400 hoac (chia het cho 4 nhung khong chia het cho 100)
         if ((year % 400 == 0) || (year % 4 == 0 && year % 100 != 0))
         {
             maxDay = 29;
@@ -364,10 +331,9 @@ int isValidDateFormat(char *date)
         return 0;
     }
 
-    return 1; // hop le
+    return 1;
 }
 
-/* Helper: Kiem tra chuoi co chua chu so khong */
 int hasDigit(char *str)
 {
     if (str == NULL)
@@ -383,7 +349,6 @@ int hasDigit(char *str)
     return 0;
 }
 
-/* Helper: Nhap va validate input y/n */
 int getYesNoInput(const char *prompt)
 {
     char buffer[10];
@@ -408,25 +373,6 @@ int getYesNoInput(const char *prompt)
     } while (1);
 }
 
-/* Helper: Nhap chuoi khong duoc de trong */
-int getNonEmptyString(char *buffer, size_t size, const char *prompt)
-{
-    do
-    {
-        printf("%s", prompt);
-        fgets(buffer, size, stdin);
-        removeNewline(buffer);
-
-        if (strlen(buffer) == 0)
-        {
-            printf("Loi: Khong duoc de trong!\n");
-            return 0;
-        }
-        return 1;
-    } while (0);
-}
-
-/* Helper: In header cua bang nhan vien */
 void printEmployeeHeader()
 {
     char line[] = "+------------+----------------------+-----------------+-----------------+------------+\n";
@@ -435,7 +381,6 @@ void printEmployeeHeader()
     printf("%s", line);
 }
 
-/* Helper: In bang nhan vien tu startIdx den endIdx */
 void printEmployeeTable(int startIdx, int endIdx)
 {
     char line[] = "+------------+----------------------+-----------------+-----------------+------------+\n";
@@ -484,7 +429,6 @@ void addEmployee()
 
         printf("\n----- THEM NHAN VIEN MOI -----\n");
 
-        /* Buoc 1: Nhap va kiem tra ma nhan vien khong trung lap */
         do
         {
             printf("Nhap Ma Nhan Vien (ID): ");
@@ -507,7 +451,6 @@ void addEmployee()
             }
         } while (!valid);
 
-        /* Buoc 2: Nhap ten, dam bao co chu cai va khong chua so */
         do
         {
             printf("Nhap Ho Ten: ");
@@ -526,7 +469,6 @@ void addEmployee()
             }
             else
             {
-                /* Su dung ham helper de kiem tra chu so */
                 if (hasDigit(emp.name))
                 {
                     printf("Loi: Ten khong duoc chua so!\n");
@@ -539,7 +481,6 @@ void addEmployee()
             }
         } while (!valid);
 
-        /* Buoc 3: Nhap chuc vu, chi cho phep chu cai/khoang trang */
         do
         {
             printf("Nhap Chuc Vu: ");
@@ -553,7 +494,6 @@ void addEmployee()
             }
             else
             {
-                /* Su dung ham helper de kiem tra chu so */
                 if (hasDigit(emp.position))
                 {
                     printf("Loi: Chuc vu khong duoc chua so!\n");
@@ -566,7 +506,6 @@ void addEmployee()
             }
         } while (!valid);
 
-        /* Buoc 4: Nhap luong co ban > 0, cho phep so thuc */
         do
         {
             printf("Nhap Luong co ban: ");
@@ -604,7 +543,6 @@ void addEmployee()
 
         printf("Them Thanh Cong !\n");
 
-        /* Hoi tiep tuc nhap nhan vien khac - su dung ham helper */
         int continueChoice = getYesNoInput("-Tiep tuc them ? (y/n): ");
         continueInput = continueChoice ? 'y' : 'n';
 
@@ -648,7 +586,6 @@ void updateEmployee()
         printf("| %-10s | %-20s | %-15s | %-15.0f |\n", employees[index].empId, employees[index].name, employees[index].position, employees[index].baseSalary);
         printf("%s", line);
 
-        /* Buoc 1: Hoi co muon doi chuc vu khong - su dung ham helper */
         if (getYesNoInput("\nBan Co Muon Thay Doi Chuc Vu ? (y/n): "))
         {
             do
@@ -664,7 +601,6 @@ void updateEmployee()
                 }
                 else
                 {
-                    /* Su dung ham helper de kiem tra chu so */
                     if (hasDigit(employees[index].position))
                     {
                         printf("Loi: Khong duoc chua so!\n");
@@ -679,7 +615,6 @@ void updateEmployee()
             printf("Cap Nhat Thanh Cong!\n");
         }
 
-        /* Buoc 2: Hoi co muon doi luong co ban khong - su dung ham helper */
         if (getYesNoInput("Ban Co Muon Thay Doi Luong CB ? (y/n): "))
         {
             char salBuffer[50];
@@ -765,7 +700,6 @@ void deleteEmployee()
     printf("| %-10s | %-20s | %-15s | %-15.0f | %-10d |\n", employees[index].empId, employees[index].name, employees[index].position, employees[index].baseSalary, employees[index].workDays);
     printf("%s", line);
 
-    /* Su dung ham helper de xac nhan xoa */
     if (getYesNoInput("Xac Nhan Xoa Nhan Vien (y/n): "))
     {
         for (int i = index; i < empCount - 1; i++)
@@ -828,8 +762,6 @@ void listEmployee()
             printf("Loi: Trang Khong Hop Le (1-%d)!\n", totalPage);
             continue;
         }
-
-        /* Tinh chi so bat dau/ket thuc cho trang hien tai */
         int start = (page - 1) * perPage;
         int end = start + perPage;
         if (end > empCount)
@@ -839,7 +771,6 @@ void listEmployee()
 
         printf("TRANG %d/%d\n", page, totalPage);
         printf("---------- DANH SACH NHAN VIEN ----------\n");
-        /* Su dung ham helper de in bang */
         printEmployeeTable(start, end);
     } while (1);
 }
@@ -868,7 +799,6 @@ void searchEmployeeByName()
                 continue;
             }
 
-            /* Su dung ham helper de kiem tra chu so */
             if (hasDigit(buffer))
             {
                 printf("Loi: Ten khong duoc chua so!\n");
@@ -877,7 +807,6 @@ void searchEmployeeByName()
 
         } while (strlen(buffer) == 0);
 
-        /* Chuyen keyword ve lowercase de so khop khong phan biet hoa thuong */
         char keyword[50];
         strcpy(keyword, buffer);
         for (int i = 0; keyword[i]; i++)
@@ -890,23 +819,19 @@ void searchEmployeeByName()
         char line[] = "+------------+----------------------+-----------------+-----------------+------------+\n";
         printEmployeeHeader();
 
-        /* Toi uu: tao ban sao nho hon va su dung strstr */
         for (int i = 0; i < empCount; i++)
         {
-            /* Tao ban sao ten de chuyen ve lowercase (can thiet cho strstr) */
             char temp[50];
             size_t nameLen = strlen(employees[i].name);
             if (nameLen >= sizeof(temp))
                 nameLen = sizeof(temp) - 1;
 
-            /* Chuyen doi ten ve lowercase */
             for (size_t j = 0; j < nameLen; j++)
             {
                 temp[j] = tolower((unsigned char)employees[i].name[j]);
             }
             temp[nameLen] = '\0';
 
-            /* So khop chuoi con: tim thay neu keyword nam trong ten */
             if (strstr(temp, keyword) != NULL)
             {
                 printf("| %-10s | %-20s | %-15s | %-15.0f | %-10d |\n",
@@ -923,7 +848,6 @@ void searchEmployeeByName()
             printf("%s", line);
         }
 
-        /* Su dung ham helper de hoi tiep tuc */
     } while (getYesNoInput("\nBan co muon tim kiem tiep khong? (y/n): "));
 }
 
@@ -973,52 +897,30 @@ void sortByBaseSalary()
 
         } while (sortOrder == -1);
 
-        /* Bubble sort toi uu: dung som neu da sap xep xong */
         int swapped;
         for (int i = 0; i < empCount - 1; i++)
         {
-            swapped = 0;
             for (int j = 0; j < empCount - i - 1; j++)
             {
-                int needSwap = 0;
-
                 if (sortOrder == 1)
                 {
-                    /* Tang dan: doi cho neu luong truoc lon hon luong sau */
-                    if (employees[j].baseSalary > employees[j + 1].baseSalary)
-                    {
-                        needSwap = 1;
-                    }
+                    (employees[j].baseSalary > employees[j + 1].baseSalary);
                 }
                 else
                 {
-                    /* Giam dan: doi cho neu luong truoc nho hon luong sau */
-                    if (employees[j].baseSalary < employees[j + 1].baseSalary)
-                    {
-                        needSwap = 1;
-                    }
+                    (employees[j].baseSalary < employees[j + 1].baseSalary);
                 }
-
-                if (needSwap)
-                {
-                    struct Employee temp = employees[j];
-                    employees[j] = employees[j + 1];
-                    employees[j + 1] = temp;
-                    swapped = 1;
-                }
+                struct Employee temp = employees[j];
+                employees[j] = employees[j + 1];
+                employees[j + 1] = temp;
             }
-            /* Neu khong co swap nao trong lan quet nay, da sap xep xong */
-            if (!swapped)
-                break;
         }
 
         printf("Da sap xep thanh cong theo thu tu %s!\n", sortOrder == 1 ? "tang dan" : "giam dan");
 
         printf("---------- DANH SACH SAU KHI SAP XEP ----------\n");
-        /* Su dung ham helper de in bang */
         printEmployeeTable(0, empCount);
 
-        /* Su dung ham helper de hoi tiep tuc */
     } while (getYesNoInput("\nBan co muon sap xep tiep khong? (y/n): "));
 }
 
@@ -1058,7 +960,6 @@ void checkIn()
         else
         {
 
-            /* Buoc 1: Nhap ngay dd/mm/yyyy va validate dinh dang */
             do
             {
                 printf("Nhap Ngay Cham Cong (DD/MM/YYYY): ");
@@ -1089,7 +990,6 @@ void checkIn()
             {
 
                 valid = 0;
-                /* Buoc 2: Chon trang thai 1 (Di lam) / 2 (Nghi lam) */
                 do
                 {
                     printf("Nhap Trang Thai (1: Di lam, 2: Nghi lam): ");
@@ -1119,7 +1019,6 @@ void checkIn()
                 }
                 else
                 {
-                    /* Buoc 3: Tao log moi, cap nhat ngay cong neu di lam */
                     struct TimeSheet newLog;
                     sprintf(newLog.logId, "L%04d", logCount + 1);
                     strcpy(newLog.empId, targetId);
@@ -1128,7 +1027,6 @@ void checkIn()
                     if (strcmp(statusChoice, "1") == 0)
                     {
                         strcpy(newLog.status, "Di lam");
-                        /* Neu di lam thi tang workDays de dung cho hien thi & tinh luong */
                         employees[index].workDays++;
                         printf("Cham Cong Thanh Cong! Tong ngay cong hien tai: %d\n", employees[index].workDays);
                     }
@@ -1143,7 +1041,6 @@ void checkIn()
                 }
             }
         }
-        /* Su dung ham helper de hoi tiep tuc */
     } while (getYesNoInput("\nBan co muon cham cong tiep khong? (y/n): "));
 }
 
@@ -1199,7 +1096,5 @@ void viewTimeSheet()
                 printf("%s", line);
             }
         }
-
-        /* Su dung ham helper de hoi tiep tuc */
     } while (getYesNoInput("\nXem tiep nhan vien khac? (y/n): "));
 }
